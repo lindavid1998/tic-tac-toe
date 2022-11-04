@@ -7,7 +7,7 @@ const board = (() => {
     var playerOne = 'X';
     var playerTwo = 'O';
 
-    const displayBoard = () => {
+    const createBoard = () => {
         let board = document.createElement('div');
         board.classList.add('board');
         document.body.appendChild(board);
@@ -29,10 +29,11 @@ const board = (() => {
 
     const reset = () => {
         array = Array(9).fill(' ')
-        displayBoard()
+        createBoard()
     }
 
     const mark = (id, symbol) => {
+        // TO DO 
         if (array[id] !== ' ') {
             array[id] = symbol // Update array
             updateBoard(id) // Update board display
@@ -51,8 +52,8 @@ const board = (() => {
         // TO DO
     }
 
-    return {displayBoard}
+    return {createBoard, reset}
 
 })();
 
-board.displayBoard()
+board.createBoard()
