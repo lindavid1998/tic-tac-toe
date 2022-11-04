@@ -2,17 +2,34 @@ const Player = (name) => {
     return {name}
 }
 
-const board = () => {
+const board = (() => {
     var array = Array(9).fill(' ');
     var playerOne = 'X';
     var playerTwo = 'O';
 
-    const displayBoard = (array) => {
-        // TO DO
+    const displayBoard = () => {
+        let board = document.createElement('div');
+        board.classList.add('board');
+        document.body.appendChild(board);
+        slotNum = 1;
+
+        for (let i = 0; i < 3; i++) {
+            let row = document.createElement('div');
+            row.classList.add('row');
+
+            for (let j = 0; j < 3; j++) {
+                let slot = document.createElement('div')
+                slot.setAttribute('id',String(slotNum))
+                row.appendChild(slot)
+                slotNum++;
+            }
+            board.appendChild(row)
+        }
     }
 
     const reset = () => {
         array = Array(9).fill(' ')
+        displayBoard()
     }
 
     const mark = (id, symbol) => {
@@ -34,4 +51,8 @@ const board = () => {
         // TO DO
     }
 
-}
+    return {displayBoard}
+
+})();
+
+board.displayBoard()
