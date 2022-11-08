@@ -1,18 +1,28 @@
 const Player = (name) => {
-    return {name}
+    let score = 0;
+    return {name, score}
 }
 
 const board = (() => {
-    var array = Array(9).fill(' ');
-    var playerOne = 'X';
-    var playerTwo = 'O';
+    var array = Array(9).fill('');
+    var playerOneTurn = true;
+    var winningCombinations = [
+        [0, 1, 2],
+        [0, 3, 6],
+        [2, 5, 8],
+        [6, 7, 8],
+        [0, 4, 8],
+        [2, 4, 6],
+        [3, 4, 5],
+        [1, 4, 7]
+    ];
 
     const createBoard = () => {
         let board = document.createElement('div');
         board.classList.add('board');
         document.body.appendChild(board);
+        
         slotNum = 1;
-
         for (let i = 0; i < 3; i++) {
             let row = document.createElement('div');
             row.classList.add('row');
@@ -20,6 +30,7 @@ const board = (() => {
             for (let j = 0; j < 3; j++) {
                 let slot = document.createElement('div')
                 slot.setAttribute('id',String(slotNum))
+                slot.classList.add('slot')
                 row.appendChild(slot)
                 slotNum++;
             }
@@ -28,32 +39,84 @@ const board = (() => {
     }
 
     const reset = () => {
-        array = Array(9).fill(' ')
+        document.querySelector('.board').remove()
+        array = Array(9).fill('')
         createBoard()
     }
 
-    const mark = (id, symbol) => {
+    const markBoard = (e) => {
         // TO DO 
-        if (array[id] !== ' ') {
-            array[id] = symbol // Update array
-            updateBoard(id) // Update board display
+        if (playerOneTurn) {
+            symbol = 'X'
+        } else {
+            symbol = 'O'
         }
-    }
 
-    const updateBoard = (id) => {
-        // TO DO
-    }
+        if (e.target.textContent === '') {
+            e.target.textContent = symbol 
+            array[e.target.getAttribute('id') - 1] = symbol
+            playerOneTurn = !playerOneTurn
+        }
 
-    const checkWin = () => {
-        // TO DO
+        console.log(symbol)
+        console.log(checkWin(symbol))
+
+        if (checkWin(symbol)) {
+            console.log(`${symbol} is the winner`)
+            // terminate game
+            endGame()
+        }
+        
     }
 
     const play = () => {
-        // TO DO
+        createBoard()
+        let slots = document.querySelectorAll('.slot')
+        slots.forEach(slot => slot.addEventListener('click', markBoard))
     }
 
-    return {createBoard, reset}
+    const convertArrToIndices = (symbol) => {
+        output = []
+        for (let i = 0; i < array.length; i++) {
+            if (array[i] === symbol) output.push(i)
+        }
+        return output
+    }
+
+    const checkWin = (symbol) => {
+        // TO DO
+
+        if (array.filter(element => (element === '')).length > 4) {
+            return false
+        }
+
+        var indices = convertArrToIndices(symbol)
+
+        for (let i = 0; i < winningCombinations.length; i++) {
+            count = 0;
+            for (let j = 0; j < winningCombinations[i].length; j++) {
+                if (indices.includes(winningCombinations[i][j])) {
+                    count++
+                }
+            }
+            if (count === 3) return true
+        }
+        return false
+    }
+
+    const endGame = () => {
+        // TO DO
+        // removes event listeners from slots
+        let slots = document.querySelectorAll('.slot')
+        slots.forEach(slot => slot.removeEventListener('click', markBoard))
+        console.log('game over!')
+
+        // adds to player score
+        
+    }
+
+    return {play, reset}
 
 })();
 
-board.createBoard()
+board.play()
