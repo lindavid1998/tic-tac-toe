@@ -44,7 +44,7 @@ const board = (() => {
         createBoard()
     }
 
-    const markBoard = (e) => {
+    const mark = (e) => {
         // TO DO 
         if (playerOneTurn) {
             symbol = 'X'
@@ -72,7 +72,7 @@ const board = (() => {
     const play = () => {
         createBoard()
         let slots = document.querySelectorAll('.slot')
-        slots.forEach(slot => slot.addEventListener('click', markBoard))
+        slots.forEach(slot => slot.addEventListener('click', mark))
     }
 
     const convertArrToIndices = (symbol) => {
@@ -108,15 +108,15 @@ const board = (() => {
         // TO DO
         // removes event listeners from slots
         let slots = document.querySelectorAll('.slot')
-        slots.forEach(slot => slot.removeEventListener('click', markBoard))
+        slots.forEach(slot => slot.removeEventListener('click', mark))
         console.log('game over!')
 
         // adds to player score
-        
+
     }
 
     return {play, reset}
 
 })();
 
-board.play()
+// board.play()
