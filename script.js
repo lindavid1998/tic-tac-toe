@@ -3,7 +3,8 @@ const Player = (name) => {
     return {name, score}
 }
 
-const board = (() => {
+const game = (() => {
+    var players = [];
     var array = Array(9).fill('');
     var playerOneTurn = true;
     var winningCombinations = [
@@ -16,6 +17,24 @@ const board = (() => {
         [3, 4, 5],
         [1, 4, 7]
     ];
+    var p1;
+    var p2;
+
+    document.querySelector('.player-form').addEventListener('submit', (e) => {
+        // Add players to game
+        e.preventDefault();
+        const formData = new FormData(e.target)
+        const formProps = Object.fromEntries(formData)
+
+        p1 = Player(formProps['player-one']);
+        p2 = Player(formProps['player-two']);
+        players.push(p1, p2)
+
+        document.querySelector('.player-form').reset()
+
+        // Start game
+        play()
+    })
 
     const createBoard = () => {
         let board = document.createElement('div');
@@ -41,34 +60,24 @@ const board = (() => {
     const reset = () => {
         document.querySelector('.board').remove()
         array = Array(9).fill('')
-        createBoard()
+        // createBoard()
     }
 
     const mark = (e) => {
-        // TO DO 
-        if (playerOneTurn) {
-            symbol = 'X'
-        } else {
-            symbol = 'O'
-        }
+        playerOneTurn ? symbol = 'X' : symbol = 'O'
 
         if (e.target.textContent === '') {
             e.target.textContent = symbol 
             array[e.target.getAttribute('id') - 1] = symbol
+
+            if (checkWin(symbol)) {
+                // console.log(`${symbol} is the winner`)
+                playerOneTurn ? endGame(p1) : endGame(p2)
+            }
             playerOneTurn = !playerOneTurn
-        }
-
-        console.log(symbol)
-        console.log(checkWin(symbol))
-
-        if (checkWin(symbol)) {
-            console.log(`${symbol} is the winner`)
-            // terminate game
-            endGame()
-        }
-        
+        }  
     }
-
+    
     const play = () => {
         createBoard()
         let slots = document.querySelectorAll('.slot')
@@ -84,14 +93,11 @@ const board = (() => {
     }
 
     const checkWin = (symbol) => {
-        // TO DO
-
         if (array.filter(element => (element === '')).length > 4) {
             return false
         }
 
         var indices = convertArrToIndices(symbol)
-
         for (let i = 0; i < winningCombinations.length; i++) {
             count = 0;
             for (let j = 0; j < winningCombinations[i].length; j++) {
@@ -104,19 +110,34 @@ const board = (() => {
         return false
     }
 
-    const endGame = () => {
+    const endGame = (winner) => {
         // TO DO
-        // removes event listeners from slots
+        // winner -> Player object
+
+        // TO DO - remove event listeners from slots
         let slots = document.querySelectorAll('.slot')
         slots.forEach(slot => slot.removeEventListener('click', mark))
-        console.log('game over!')
+
+        // display winner
+        let result = document.createElement('h2')
+        result.textContent = `Game over. The winner is ${winner.name}!`
+        document.body.appendChild(result)
 
         // adds to player score
+        winner.score++;
 
+        // add button to rematch
+        let resetButton = document.createElement('button')
+        resetButton.textContent = 'Rematch!'
+        resetButton.addEventListener('click', reset)
+        document.querySelector("#buttons").appendChild(resetButton)
+
+        // add button to start a new game
+        let newGameButton = document.createElement('button')
+        newGameButton.textContent = 'New Game'
+        document.querySelector("#buttons").appendChild(newGameButton)
     }
 
-    return {play, reset}
+    return {players}
 
 })();
-
-// board.play()
