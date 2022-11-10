@@ -57,6 +57,33 @@ const game = (() => {
         displayTurn()
     }
 
+    const updateLeaderboard = () => {
+        leaderboard = document.querySelector('.leaderboard')
+        for (let i = 0; i < players.length; i++) {
+
+            // if player is not in leaderboard yet
+            if (!document.querySelector(`#${players[i].name}`)) {
+                // add player to leaderboard
+                let player = document.createElement('div')
+                player.id = `${players[i].name}`
+                player.textContent = `${players[i].name} - ${players[i].score}`
+                leaderboard.appendChild(player)
+                // let name = document.createElement('div')
+                // name.textContent = `${players[i].name}`
+                // let score = document.createElement('div')
+                // score.textContent = `${players[i].score}`
+
+                // player.appendChild(name)
+                // player.appendChild(score)
+            
+                
+            } else {
+                // need to access score and update
+                document.querySelector(`#${players[i].name}`).textContent = `${players[i].name} - ${players[i].score}`
+            }
+        }
+    }
+
     const reset = () => {
         document.querySelector('.board').remove()
         document.querySelector('.winner').remove()
@@ -151,6 +178,9 @@ const game = (() => {
         // adds to player score
         winner.score++;
         // console.log(players)
+
+        // update leaderboard
+        updateLeaderboard()
 
         // toggle elements
         document.querySelector('.turn').classList.add('hidden')
