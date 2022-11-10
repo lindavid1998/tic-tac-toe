@@ -50,12 +50,25 @@
             line-height: 2.5;
         }
 
+        .hidden {
+            display: none;
+        }
+
+        .container {
+            margin: 10px 0px;
+        }
+
+        h1, h3 {
+            margin: 0;
+        }
+
     </style>
 </head>
 <body>
     <h1>Tic Tac Toe</h1>
 
     <form action='index.html' method='get' class='player-form'>
+        <h3>Who is playing?</h3>
         <div class="form-row">
             <label for='player-one'>Player One:</label>
             <input id='player-one' name='player-one' type='text' required>
@@ -65,9 +78,19 @@
             <input id='player-two' name='player-two' type='text' required>
         </div>
         <div class='form-row' id="buttons">
-            <button id="submit-button">Play!</button>
+            <button type="submit" id="play">Play!</button>
+            
         </div> 
     </form>
+
+    <div class="container">
+        <button id="rematch" class="hidden">Rematch!</button>
+        <button id="new-game" class="hidden">New game</button>
+    </div>
+
+    <div class="turn">
+        
+    </div>
 
     <script src="script.js"></script>
 </body>
