@@ -60,14 +60,13 @@ const game = (() => {
     const updateLeaderboard = () => {
         leaderboard = document.querySelector('.leaderboard')
         for (let i = 0; i < players.length; i++) {
-
-            // if player is not in leaderboard yet
             if (!document.querySelector(`#${players[i].name}`)) {
-                // add player to leaderboard
                 let player = document.createElement('div')
                 player.id = `${players[i].name}`
                 player.textContent = `${players[i].name} - ${players[i].score}`
                 leaderboard.appendChild(player)
+
+                // if want to split name and score:
                 // let name = document.createElement('div')
                 // name.textContent = `${players[i].name}`
                 // let score = document.createElement('div')
@@ -75,10 +74,8 @@ const game = (() => {
 
                 // player.appendChild(name)
                 // player.appendChild(score)
-            
                 
             } else {
-                // need to access score and update
                 document.querySelector(`#${players[i].name}`).textContent = `${players[i].name} - ${players[i].score}`
             }
         }
@@ -164,6 +161,8 @@ const game = (() => {
     }
 
     const endGame = (winner) => {
+
+        document.querySelector('.leaderboard p').classList.add('hidden')
 
         // remove event listeners from slots
         let slots = document.querySelectorAll('.slot')
