@@ -110,7 +110,6 @@ const game = (() => {
             playerOneTurn = !playerOneTurn
             displayTurn()
         }  
-
     }
     
     const play = () => {
@@ -172,7 +171,6 @@ const game = (() => {
         let result = document.createElement('h2')
         result.classList.add('result')
 
-        
         if (!winner) {
             result.textContent = 'Tie!'
         } else {
