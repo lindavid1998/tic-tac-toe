@@ -36,7 +36,9 @@ const game = (() => {
     const createBoard = () => {
         let board = document.createElement('div');
         board.classList.add('board');
-        document.body.appendChild(board);
+
+        document.querySelector('.game').appendChild(board)
+        // document.body.appendChild(board);
 
         document.querySelector('.turn').classList.remove('hidden')
         
@@ -57,14 +59,14 @@ const game = (() => {
         displayTurn()
     }
 
-    const updateLeaderboard = () => {
-        leaderboard = document.querySelector('.leaderboard')
+    const updateScores = () => {
+        scores = document.querySelector('.scores')
         for (let i = 0; i < players.length; i++) {
             if (!document.querySelector(`#${players[i].name}`)) {
                 let player = document.createElement('div')
                 player.id = `${players[i].name}`
                 player.textContent = `${players[i].name} - ${players[i].score}`
-                leaderboard.appendChild(player)
+                scores.appendChild(player)
 
                 // if want to split name and score:
                 // let name = document.createElement('div')
@@ -83,7 +85,7 @@ const game = (() => {
 
     const reset = () => {
         document.querySelector('.board').remove()
-        document.querySelector('.winner').remove()
+        document.querySelector('.result').remove()
         document.querySelector('#rematch').classList.add('hidden')
         document.querySelector('#new-game').classList.add('hidden')
         array = Array(9).fill('')
@@ -106,9 +108,13 @@ const game = (() => {
             array[e.target.getAttribute('id') - 1] = symbol
 
             if (checkWin(symbol)) {
-                // console.log(`${symbol} is the winner`)
                 playerOneTurn ? endGame(p1) : endGame(p2)
             }
+
+            if (checkTie()) {
+                endGame(false)
+            }
+
             playerOneTurn = !playerOneTurn
             displayTurn()
         }  
@@ -142,6 +148,13 @@ const game = (() => {
         return output
     }
 
+    const checkTie = () => {
+        // if the number of marked slots = 9, then stop game
+        if (array.filter(element => (element === '')).length === 0) {
+            return true
+        }
+    }
+
     const checkWin = (symbol) => {
         if (array.filter(element => (element === '')).length > 4) {
             return false
@@ -161,25 +174,27 @@ const game = (() => {
     }
 
     const endGame = (winner) => {
-
-        document.querySelector('.leaderboard p').classList.add('hidden')
-
+        // winner is object, false if no winner
+        
         // remove event listeners from slots
         let slots = document.querySelectorAll('.slot')
         slots.forEach(slot => slot.removeEventListener('click', mark))
 
-        // display winner
         let result = document.createElement('h2')
-        result.classList.add('winner')
-        result.textContent = `Game over. The winner is ${winner.name}!`
-        document.body.appendChild(result)
-        
-        // adds to player score
-        winner.score++;
-        // console.log(players)
+        result.classList.add('result')
 
-        // update leaderboard
-        updateLeaderboard()
+        
+        if (!winner) {
+            result.textContent = 'Tie!'
+        } else {
+            document.querySelector('.scores p').classList.add('hidden')
+            result.textContent = `Game over. The winner is ${winner.name}!`
+            winner.score++;
+            updateScores()
+        }
+
+        // display result on DOM
+        document.querySelector('.game').appendChild(result)        
 
         // toggle elements
         document.querySelector('.turn').classList.add('hidden')
