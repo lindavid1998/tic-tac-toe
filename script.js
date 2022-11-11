@@ -66,17 +66,7 @@ const game = (() => {
                 let player = document.createElement('div')
                 player.id = `${players[i].name}`
                 player.textContent = `${players[i].name} - ${players[i].score}`
-                scores.appendChild(player)
-
-                // if want to split name and score:
-                // let name = document.createElement('div')
-                // name.textContent = `${players[i].name}`
-                // let score = document.createElement('div')
-                // score.textContent = `${players[i].score}`
-
-                // player.appendChild(name)
-                // player.appendChild(score)
-                
+                scores.appendChild(player)         
             } else {
                 document.querySelector(`#${players[i].name}`).textContent = `${players[i].name} - ${players[i].score}`
             }
@@ -102,11 +92,13 @@ const game = (() => {
 
     const mark = (e) => {
         playerOneTurn ? symbol = 'X' : symbol = 'O'
+        playerOneTurn ? color = '#f2be8d' : color = '#ba6c65'
 
         if (e.target.textContent === '') {
             e.target.textContent = symbol 
+            e.target.style.color = color
             array[e.target.getAttribute('id') - 1] = symbol
-
+            
             if (checkWin(symbol)) {
                 playerOneTurn ? endGame(p1) : endGame(p2)
             }
@@ -149,7 +141,6 @@ const game = (() => {
     }
 
     const checkTie = () => {
-        // if the number of marked slots = 9, then stop game
         if (array.filter(element => (element === '')).length === 0) {
             return true
         }
@@ -175,8 +166,6 @@ const game = (() => {
 
     const endGame = (winner) => {
         // winner is object, false if no winner
-        
-        // remove event listeners from slots
         let slots = document.querySelectorAll('.slot')
         slots.forEach(slot => slot.removeEventListener('click', mark))
 
