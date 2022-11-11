@@ -1,0 +1,65 @@
+* {
+    font-family: 'Noto Sans', sans-serif;
+}
+
+.row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.row div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    width: 100px;
+    height: 100px;
+
+    font-size: 2rem;
+}
+
+.slot {
+    background-color: rgb(217, 217, 217);
+}
+
+.player-form {
+    display: flex;
+    flex-direction: column;
+
+    margin-bottom: 10px;
+}
+
+input[type="text"] {
+    max-width: 300px;
+}
+
+form {
+    line-height: 2.5;
+}
+
+.hidden {
+    display: none;
+}
+
+.end-game-buttons {
+    margin: 10px 0px;
+}
+
+h1, h3 {
+    margin: 0;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: 2fr  1fr;
+    grid-template-rows: 1fr;
+}
+
+.game {
+    grid-column: 1;
+}
+
+.scores {
+    grid-column: 2;
+}
