@@ -105,6 +105,12 @@ input[type="text"] {
     padding: 3px;
     border: 1px solid var(--border-color);
     color: #e8e6e3;
+
+    outline: none;
+}
+
+input[type="text"]:focus {
+    background-color: #1f1f1f;
 }
 
 .hidden {

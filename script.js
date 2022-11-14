@@ -7,31 +7,10 @@ const game = (() => {
     var players = [];
     var playerOneTurn = true;
     var array = Array(9).fill('');
-    var winningCombinations = [
-        [0, 1, 2],
-        [0, 3, 6],
-        [2, 5, 8],
-        [6, 7, 8],
-        [0, 4, 8],
-        [2, 4, 6],
-        [3, 4, 5],
-        [1, 4, 7]
-    ];
     var p1;
     var p2;
-
-    document.querySelector('.player-form').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const formData = new FormData(e.target)
-        const formProps = Object.fromEntries(formData)
-        document.querySelector('.player-form').reset()
-
-        p1 = Player(formProps['player-one']);
-        p2 = Player(formProps['player-two']);
-        players.push(p1, p2)
-
-        play()
-    })
+    var symbol;
+    var color;
 
     const createBoard = () => {
         let board = document.createElement('div');
@@ -59,7 +38,7 @@ const game = (() => {
         displayTurn()
     }
 
-    const updateScores = () => {
+    const updateScoreboard = () => {
         scores = document.querySelector('.scores')
         for (let i = 0; i < players.length; i++) {
             if (!document.querySelector(`#${players[i].name}`)) {
@@ -82,17 +61,20 @@ const game = (() => {
     }
 
     const displayTurn = () => {
+        playerOneTurn ? symbol = 'X' : symbol = 'O'
+        playerOneTurn ? color = '#f2be8d' : color = '#ba6c65'
+        
         let turn = document.querySelector('.turn')
         if (playerOneTurn) {
-            turn.textContent = `It is ${p1.name}'s turn`
+            turn.textContent = `It is ${p1.name}'s turn (${symbol})`
         } else {
-            turn.textContent = `It is ${p2.name}'s turn`
+            turn.textContent = `It is ${p2.name}'s turn (${symbol})`
         }
     }
 
     const mark = (e) => {
-        playerOneTurn ? symbol = 'X' : symbol = 'O'
-        playerOneTurn ? color = '#f2be8d' : color = '#ba6c65'
+        // playerOneTurn ? symbol = 'X' : symbol = 'O'
+        // playerOneTurn ? color = '#f2be8d' : color = '#ba6c65'
 
         if (e.target.textContent === '') {
             e.target.textContent = symbol 
@@ -118,17 +100,6 @@ const game = (() => {
         document.querySelector('.player-form').classList.add('hidden')
     }
 
-    document.querySelector("#rematch").addEventListener('click', () => {
-        reset()
-        play()
-    })
-    document.querySelector("#new-game").addEventListener('click', () => {
-        reset()
-        document.querySelector('.player-form').classList.remove('hidden')
-        document.querySelector('#play').classList.remove('hidden')
-    })
-
-
     const convertArrToIndices = (symbol) => {
         output = []
         for (let i = 0; i < array.length; i++) {
@@ -144,6 +115,17 @@ const game = (() => {
     }
 
     const checkWin = (symbol) => {
+        var winningCombinations = [
+            [0, 1, 2],
+            [0, 3, 6],
+            [2, 5, 8],
+            [6, 7, 8],
+            [0, 4, 8],
+            [2, 4, 6],
+            [3, 4, 5],
+            [1, 4, 7]
+        ];
+
         if (array.filter(element => (element === '')).length > 4) {
             return false
         }
@@ -173,13 +155,36 @@ const game = (() => {
             document.querySelector('.scores p').classList.add('hidden')
             result.textContent = `Game over. The winner is ${winner.name}!`
             winner.score++;
-            updateScores()
+            updateScoreboard()
         }
 
         document.querySelector('.turn').classList.add('hidden')
         document.querySelector('#rematch').classList.remove('hidden')
         document.querySelector('#new-game').classList.remove('hidden')
     }
+
+    document.querySelector('.player-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target)
+        const formProps = Object.fromEntries(formData)
+        document.querySelector('.player-form').reset()
+
+        p1 = Player(formProps['player-one']);
+        p2 = Player(formProps['player-two']);
+        players.push(p1, p2)
+
+        play()
+    })
+    
+    document.querySelector("#rematch").addEventListener('click', () => {
+        reset()
+        play()
+    })
+    document.querySelector("#new-game").addEventListener('click', () => {
+        reset()
+        document.querySelector('.player-form').classList.remove('hidden')
+        document.querySelector('#play').classList.remove('hidden')
+    })
 
     return {players}
 
