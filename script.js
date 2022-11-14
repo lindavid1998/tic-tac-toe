@@ -19,6 +19,7 @@ const game = (() => {
     ];
     var p1;
     var p2;
+    var symbol;
 
     document.querySelector('.player-form').addEventListener('submit', (e) => {
         e.preventDefault();
@@ -100,6 +101,8 @@ const game = (() => {
             
             if (checkWin(symbol)) {
                 playerOneTurn ? endGame(p1) : endGame(p2)
+            } else if (checkTie()) {
+                endGame(false)
             }
 
             playerOneTurn = !playerOneTurn
