@@ -38,7 +38,6 @@ const game = (() => {
         board.classList.add('board');
 
         document.querySelector('.game').appendChild(board)
-        // document.body.appendChild(board);
 
         document.querySelector('.turn').classList.remove('hidden')
         
@@ -101,10 +100,6 @@ const game = (() => {
             
             if (checkWin(symbol)) {
                 playerOneTurn ? endGame(p1) : endGame(p2)
-            }
-
-            if (checkTie()) {
-                endGame(false)
             }
 
             playerOneTurn = !playerOneTurn
@@ -172,7 +167,7 @@ const game = (() => {
         result.classList.add('result')
 
         if (!winner) {
-            result.textContent = 'Tie!'
+            result.textContent = `Game over. It's a tie!`
         } else {
             document.querySelector('.scores p').classList.add('hidden')
             result.textContent = `Game over. The winner is ${winner.name}!`
