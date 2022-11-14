@@ -11,6 +11,7 @@ const game = (() => {
     var p2;
     var symbol;
     var color;
+    var winningCombo = []
 
     const createBoard = () => {
         let board = document.createElement('div');
@@ -73,9 +74,6 @@ const game = (() => {
     }
 
     const mark = (e) => {
-        // playerOneTurn ? symbol = 'X' : symbol = 'O'
-        // playerOneTurn ? color = '#f2be8d' : color = '#ba6c65'
-
         if (e.target.textContent === '') {
             e.target.textContent = symbol 
             e.target.style.color = color
@@ -135,10 +133,12 @@ const game = (() => {
             count = 0;
             for (let j = 0; j < winningCombinations[i].length; j++) {
                 if (indices.includes(winningCombinations[i][j])) {
+                    winningCombo.push(winningCombinations[i][j])
                     count++
                 }
             }
             if (count === 3) return true
+            winningCombo = []
         }
         return false
     }
@@ -156,11 +156,19 @@ const game = (() => {
             result.textContent = `Game over. The winner is ${winner.name}!`
             winner.score++;
             updateScoreboard()
+            showWinningCombo()
         }
 
         document.querySelector('.turn').classList.add('hidden')
         document.querySelector('#rematch').classList.remove('hidden')
         document.querySelector('#new-game').classList.remove('hidden')
+    }
+
+    const showWinningCombo = () => {
+        for (let i = 0; i < winningCombo.length; i++) {
+            // document.getElementById(`${winningCombo[i] + 1}`).style.backgroundColor = 'blue';
+            document.getElementById(`${winningCombo[i] + 1}`).style.color = "rgb(93 255 95)";
+        }
     }
 
     document.querySelector('.player-form').addEventListener('submit', (e) => {
