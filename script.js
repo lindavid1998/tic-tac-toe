@@ -37,8 +37,6 @@ const game = (() => {
         let board = document.createElement('div');
         board.classList.add('board');
 
-        // append board to game container after .turn
-        // document.querySelector('.game').appendChild(board)
         let endGameButtons = document.querySelector('.end-game-buttons')
         document.querySelector('.game').insertBefore(board, endGameButtons)
 
@@ -77,7 +75,7 @@ const game = (() => {
 
     const reset = () => {
         document.querySelector('.board').remove()
-        document.querySelector('.result').remove()
+        document.querySelector('.result').textContent = ''
         document.querySelector('#rematch').classList.add('hidden')
         document.querySelector('#new-game').classList.add('hidden')
         array = Array(9).fill('')
@@ -168,11 +166,7 @@ const game = (() => {
         let slots = document.querySelectorAll('.slot')
         slots.forEach(slot => slot.removeEventListener('click', mark))
 
-        // let result = document.createElement('h2')
-        // result.classList.add('result')
-
         result = document.querySelector('.result')
-
         if (!winner) {
             result.textContent = `Game over. It's a tie!`
         } else {
@@ -182,10 +176,6 @@ const game = (() => {
             updateScores()
         }
 
-        // display result on DOM
-        // document.querySelector('.game').appendChild(result)        
-
-        // toggle elements
         document.querySelector('.turn').classList.add('hidden')
         document.querySelector('#rematch').classList.remove('hidden')
         document.querySelector('#new-game').classList.remove('hidden')
