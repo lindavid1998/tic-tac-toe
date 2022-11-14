@@ -19,7 +19,6 @@ const game = (() => {
     ];
     var p1;
     var p2;
-    var symbol;
 
     document.querySelector('.player-form').addEventListener('submit', (e) => {
         e.preventDefault();
@@ -38,7 +37,10 @@ const game = (() => {
         let board = document.createElement('div');
         board.classList.add('board');
 
-        document.querySelector('.game').appendChild(board)
+        // append board to game container after .turn
+        // document.querySelector('.game').appendChild(board)
+        let endGameButtons = document.querySelector('.end-game-buttons')
+        document.querySelector('.game').insertBefore(board, endGameButtons)
 
         document.querySelector('.turn').classList.remove('hidden')
         
@@ -166,8 +168,10 @@ const game = (() => {
         let slots = document.querySelectorAll('.slot')
         slots.forEach(slot => slot.removeEventListener('click', mark))
 
-        let result = document.createElement('h2')
-        result.classList.add('result')
+        // let result = document.createElement('h2')
+        // result.classList.add('result')
+
+        result = document.querySelector('.result')
 
         if (!winner) {
             result.textContent = `Game over. It's a tie!`
@@ -179,7 +183,7 @@ const game = (() => {
         }
 
         // display result on DOM
-        document.querySelector('.game').appendChild(result)        
+        // document.querySelector('.game').appendChild(result)        
 
         // toggle elements
         document.querySelector('.turn').classList.add('hidden')
