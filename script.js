@@ -65,12 +65,19 @@ const game = (() => {
         playerOneTurn ? symbol = 'X' : symbol = 'O'
         playerOneTurn ? color = '#f2be8d' : color = '#ba6c65'
         
-        let turn = document.querySelector('.turn')
-        if (playerOneTurn) {
-            turn.textContent = `It is ${p1.name}'s turn (${symbol})`
-        } else {
-            turn.textContent = `It is ${p2.name}'s turn (${symbol})`
-        }
+        let str = `It is player's turn (sym)`
+
+        let player = document.createElement('span')
+        player.style.color = color;
+        playerOneTurn ? player.textContent = `${p1.name}` : player.textContent = `${p2.name}`
+        str = str.replace('player', player.outerHTML)
+
+        let marker = document.createElement('span')
+        marker.style.color = color;
+        marker.textContent = `${symbol}`
+        str = str.replace('sym', marker.outerHTML)
+
+        document.querySelector('.turn').innerHTML = str
     }
 
     const mark = (e) => {
@@ -144,7 +151,6 @@ const game = (() => {
     }
 
     const endGame = (winner) => {
-        // winner is object, false if no winner
         let slots = document.querySelectorAll('.slot')
         slots.forEach(slot => slot.removeEventListener('click', mark))
 
@@ -166,7 +172,6 @@ const game = (() => {
 
     const showWinningCombo = () => {
         for (let i = 0; i < winningCombo.length; i++) {
-            // document.getElementById(`${winningCombo[i] + 1}`).style.backgroundColor = 'blue';
             document.getElementById(`${winningCombo[i] + 1}`).style.color = "rgb(93 255 95)";
         }
     }
@@ -188,6 +193,7 @@ const game = (() => {
         reset()
         play()
     })
+
     document.querySelector("#new-game").addEventListener('click', () => {
         reset()
         document.querySelector('.player-form').classList.remove('hidden')
