@@ -3,16 +3,7 @@ const Player = (name) => {
     return {name, score}
 }
 
-const game = (() => {
-    var players = [];
-    var playerOneTurn = true;
-    var array = Array(9).fill('');
-    var p1;
-    var p2;
-    var symbol;
-    var color;
-    var winningCombo = []
-
+const display = (() => {
     const createBoard = () => {
         let board = document.createElement('div');
         board.classList.add('board');
@@ -36,10 +27,28 @@ const game = (() => {
             }
             board.appendChild(row)
         }
-        displayTurn()
+        showTurn()
+    }
+
+    const showTurn = () => {        
+        let str = `It is player's turn (sym)`
+
+        let player = document.createElement('span')
+        player.style.color = game.getColor();
+        // playerOneTurn ? player.textContent = `${p1.name}` : player.textContent = `${p2.name}`
+        player.textContent = game.getCurrentPlayer().name;
+        str = str.replace('player', player.outerHTML)
+
+        let marker = document.createElement('span')
+        marker.style.color = game.getColor();
+        marker.textContent = game.getSymbol()
+        str = str.replace('sym', marker.outerHTML)
+
+        document.querySelector('.turn').innerHTML = str
     }
 
     const updateScoreboard = () => {
+        let players = game.getPlayers()
         scores = document.querySelector('.scores')
         for (let i = 0; i < players.length; i++) {
             if (!document.querySelector(`#${players[i].name}`)) {
@@ -53,56 +62,95 @@ const game = (() => {
         }
     }
 
+    const mark = (e) => {
+        if (e.target.textContent === '') {
+            let symbol = game.getSymbol();
+            e.target.textContent = symbol; 
+            e.target.style.color = game.getColor();
+            game.updateArray(e.target.getAttribute('id') - 1, symbol)
+            
+            if (game.checkWin(symbol)) {
+                game.endGame(game.getCurrentPlayer())
+            } else if (game.checkTie()) {
+                game.endGame(false)
+            }
+
+            game.switchTurns()
+            showTurn()
+        }  
+    }
+
+    const showWinningCombo = () => {
+        winningCombo = game.getWinningCombo();
+        for (let i = 0; i < winningCombo.length; i++) {
+            document.getElementById(`${winningCombo[i] + 1}`).style.color = "rgb(93 255 95)";
+        }
+    }
+
+    return {
+        createBoard,
+        updateScoreboard,
+        showTurn,
+        showWinningCombo,
+        mark
+    }
+
+})();
+
+const game = (() => {
+    var players = [];
+    var playerOneTurn = true;
+    var array = Array(9).fill('');
+    var p1;
+    var p2;
+    var winningCombo = [];
+
+    const getColor = () => {
+        return playerOneTurn ? '#f2be8d' : '#ba6c65'
+    }
+
+    const getSymbol = () => {
+        return playerOneTurn ? 'X' : 'O'
+    }
+
+    const getCurrentPlayer = () => {
+        return playerOneTurn ? p1 : p2
+    }
+
+    const getPlayers = () => {
+        return players
+    }
+
+    const getWinningCombo = () => {
+        return winningCombo
+    }
+
+    const switchTurns = () => {
+        playerOneTurn = !playerOneTurn
+    }
+
+    const isPlayerOneTurn = () => {
+        return playerOneTurn
+    }
+
+    const updateArray = (index, symbol) => {
+        array[index] = symbol;
+    }
+
+    const play = () => {
+        display.createBoard()
+        display.showTurn()
+        let slots = document.querySelectorAll('.slot')
+        slots.forEach(slot => slot.addEventListener('click', display.mark))
+        document.querySelector('.player-form').classList.add('hidden')
+    }
+
     const reset = () => {
         document.querySelector('.board').remove()
         document.querySelector('.result').textContent = ''
         document.querySelector('#rematch').classList.add('hidden')
         document.querySelector('#new-game').classList.add('hidden')
         array = Array(9).fill('')
-    }
-
-    const displayTurn = () => {
-        playerOneTurn ? symbol = 'X' : symbol = 'O'
-        playerOneTurn ? color = '#f2be8d' : color = '#ba6c65'
-        
-        let str = `It is player's turn (sym)`
-
-        let player = document.createElement('span')
-        player.style.color = color;
-        playerOneTurn ? player.textContent = `${p1.name}` : player.textContent = `${p2.name}`
-        str = str.replace('player', player.outerHTML)
-
-        let marker = document.createElement('span')
-        marker.style.color = color;
-        marker.textContent = `${symbol}`
-        str = str.replace('sym', marker.outerHTML)
-
-        document.querySelector('.turn').innerHTML = str
-    }
-
-    const mark = (e) => {
-        if (e.target.textContent === '') {
-            e.target.textContent = symbol 
-            e.target.style.color = color
-            array[e.target.getAttribute('id') - 1] = symbol
-            
-            if (checkWin(symbol)) {
-                playerOneTurn ? endGame(p1) : endGame(p2)
-            } else if (checkTie()) {
-                endGame(false)
-            }
-
-            playerOneTurn = !playerOneTurn
-            displayTurn()
-        }  
-    }
-    
-    const play = () => {
-        createBoard()
-        displayTurn()
-        let slots = document.querySelectorAll('.slot')
-        slots.forEach(slot => slot.addEventListener('click', mark))
-        document.querySelector('.player-form').classList.add('hidden')
     }
 
     const convertArrToIndices = (symbol) => {
@@ -152,7 +200,7 @@ const game = (() => {
 
     const endGame = (winner) => {
         let slots = document.querySelectorAll('.slot')
-        slots.forEach(slot => slot.removeEventListener('click', mark))
+        slots.forEach(slot => slot.removeEventListener('click', display.mark))
 
         result = document.querySelector('.result')
         if (!winner) {
@@ -161,19 +209,13 @@ const game = (() => {
             document.querySelector('.scores p').classList.add('hidden')
             result.textContent = `Game over. The winner is ${winner.name}!`
             winner.score++;
-            updateScoreboard()
-            showWinningCombo()
+            display.updateScoreboard()
+            display.showWinningCombo()
         }
 
         document.querySelector('.turn').classList.add('hidden')
         document.querySelector('#rematch').classList.remove('hidden')
         document.querySelector('#new-game').classList.remove('hidden')
-    }
-
-    const showWinningCombo = () => {
-        for (let i = 0; i < winningCombo.length; i++) {
-            document.getElementById(`${winningCombo[i] + 1}`).style.color = "rgb(93 255 95)";
-        }
     }
 
     document.querySelector('.player-form').addEventListener('submit', (e) => {
@@ -185,7 +227,6 @@ const game = (() => {
         p1 = Player(formProps['player-one']);
         p2 = Player(formProps['player-two']);
         players.push(p1, p2)
-
         play()
     })
     
@@ -200,6 +241,18 @@ const game = (() => {
         document.querySelector('#play').classList.remove('hidden')
     })
 
-    return {players}
+    return {
+        getPlayers,
+        getColor,
+        getSymbol,
+        getCurrentPlayer,
+        getWinningCombo,
+        switchTurns,
+        checkWin,
+        checkTie,
+        updateArray,
+        endGame,
+        isPlayerOneTurn
+    }
 
 })();
